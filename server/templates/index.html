@@ -3,21 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <title>Consulta ao Banco</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            margin-top: 40px;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+
+        h1, h2 {
+            color: #333;
+            text-align: center;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+
+        .alt-btn {
+            background-color: #6c757d;
+        }
+
+        .alt-btn:hover {
+            background-color: #5a6268;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #e9ecef;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Consulta ao Banco de Dados</h1>
-    <form action="/consulta" method="post">
-        <input type="text" name="termo" placeholder="Digite um nome">
-        <button type="submit">Consultar</button>
-    </form>
+    <div class="container">
+        <h1>Consulta ao Banco de Dados</h1>
 
-    {% if resultados %}
-        <h2>Resultados:</h2>
-        <ul>
-        {% for nome, profissao, salario in resultados %}
-            <li>{{ nome }} - {{ profissao }} - R$ {{ salario }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+        <form action="/consulta" method="post">
+            <input type="text" name="termo" placeholder="Digite um nome" required>
+            <button type="submit">Consultar</button>
+        </form>
+
+        {% if resultados %}
+            <h2>Resultados:</h2>
+            <ul>
+            {% for nome, profissao, salario in resultados %}
+                <li><strong>{{ nome }}</strong> - {{ profissao }} - R$ {{ salario }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h2>Inserir Novo Registro</h2>
+        <form action="/inserir" method="POST">
+            <input type="text" name="nome" placeholder="Nome" required>
+            <input type="text" name="profissao" placeholder="Profissão" required>
+            <input type="number" name="salario" placeholder="Salário" required>
+            <input type="password" name="senha" placeholder="Senha" required>
+            <button type="submit">Inserir</button>
+        </form>
+
+        <form action="/login" method="GET">
+            <button type="submit" class="alt-btn">Ir para tela de login</button>
+        </form>
+
+        <a href="/logout">Sair</a>
+    </div>
 </body>
 </html>
