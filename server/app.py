@@ -4,6 +4,7 @@ import sqlite3
 import bcrypt
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '181369b4a106a6478ebdb64ba2c5e009'
 
 @app.route('/')
 def index():
