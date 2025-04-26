@@ -1,0 +1,71 @@
+
+🛡️ RELATÓRIO DE SEGURANÇA – SQL INJECTION NA ROTA /consulta
+
+---
+
+🔴 ANTES DA CORREÇÃO (VULNERÁVEL)
+
+Código vulnerável:
+------------------
+query = f"SELECT nome, profissao, salario FROM pessoas WHERE nome LIKE '%{termo}%'"
+c.execute(query)
+
+Problemas identificados:
+------------------------
+- Concatenação direta da entrada do usuário (termo) na query.
+- Total ausência de parametrização.
+- A aplicação não valida o tamanho ou formato da entrada.
+- Sanitização ausente, expondo o HTML a injeção de scripts (XSS).
+
+Testes realizados com sqlmap:
+-----------------------------
+sqlmap -u "http://127.0.0.1:5000/consulta" --data="termo=teste" --batch --level=5 --risk=3 --flush-session
+
+Resultados:
+-----------
+- Parâmetro vulnerável: termo (POST)
+- Banco de dados identificado: SQLite
+- Técnicas exploradas com sucesso:
+  • Boolean-based blind:
+    termo=-1984' OR 4854=4854--
+  • Time-based blind:
+    termo=teste' OR 6220=LIKE(CHAR(...),UPPER(HEX(RANDOMBLOB(...))))--
+  • UNION-based:
+    termo=teste' UNION ALL SELECT NULL,NULL,CHAR(...)--
+
+---
+
+✅ DEPOIS DA CORREÇÃO (SEGURO)
+
+Código corrigido:
+-----------------
+c.execute("SELECT nome, profissao, salario FROM pessoas WHERE nome LIKE ?", ('%' + termo + '%',))
+
+Medidas implementadas:
+----------------------
+1. Parametrização segura da query (uso de ? com tupla).
+2. Validação da entrada do usuário (vazia ou muito longa).
+3. Sanitização com html.escape() antes de exibir no HTML.
+4. Tratamento de exceções com try/except para evitar mensagens sensíveis.
+5. (Opcional) Log de acessos para auditoria futura.
+
+Reexecução dos testes com sqlmap:
+---------------------------------
+sqlmap -u "http://127.0.0.1:5000/consulta" \ --data="termo=teste" \ --dbms=sqlite \ --level=5 \ --risk=3 \ --batch \ --flush-session
+
+
+Resultados obtidos:
+---------------------
+
+[WARNING] POST parameter 'termo' does not seem to be injectable
+[CRITICAL] all tested parameters do not appear to be injectable. 
+
+---
+
+📌 CONCLUSÃO
+
+- A vulnerabilidade inicial permitia extração e manipulação arbitrária de dados via injeção SQL.
+- Após as correções, a aplicação passou a seguir boas práticas de segurança:
+  • Uso de parâmetros no SQL.
+  • Validação e sanitização adequadas.
+- O sistema se tornou resistente às técnicas utilizadas pelo sqlmap, como boolean, time-based e union.

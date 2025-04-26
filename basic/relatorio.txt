@@ -1,0 +1,89 @@
+Relatório de Testes 
+
+ 
+2. Testes de Segurança 
+ 
+a) SQL Injection 
+ 
+Teste Manual - Comandos Testados: 
+
+' OR 1=1 --
+' OR '1'='1
+'; DROP TABLE pessoas --
+' UNION SELECT null, version(), null --
+
+
+Teste Automatizado: 
+- Usar ferramentas como sqlmap para testar automaticamente a aplicação em busca 
+de vulnerabilidades de SQL Injection. 
+  Exemplo: 
+  sqlmap -u "http://127.0.0.1:5000/consulta" --data="termo=' OR 1=1 --" --batch 
+ 
+ 
+b) Cross-Site Scripting (XSS) 
+ 
+Objetivo: Garantir que a aplicação não permita a execução de scripts maliciosos no 
+navegador dos usuários. 
+ 
+Teste Manual: 
+- Enviar entradas com scripts, como "<script>alert('XSS')</script>", em campos de 
+entrada. 
+- Verificar se o conteúdo é escapado corretamente na renderização da página ou se 
+há algum erro de execução. 
+ 
+Teste Automatizado: 
+- Usar ferramentas como OWASP ZAP para realizar testes automáticos de XSS. 
+ 
+c) Cross-Site Request Forgery (CSRF) 
+ 
+Objetivo: Verificar se a aplicação está protegida contra CSRF, onde um atacante 
+pode induzir um usuário a executar ações indesejadas. 
+ 
+Teste Manual: 
+- Fazer uma requisição de formulário sem um token CSRF ou com um token forjado 
+e ver se a requisição é aceita. 
+- Verificar se a aplicação retorna um erro adequado de CSRF (ex: "Token CSRF 
+inválido"). 
+ 
+Teste Automatizado: 
+- Usar Flask-WTF ou similar para garantir que a proteção CSRF esteja configurada 
+corretamente. 
+- Para testar, usar ferramentas como Burp Suite ou Postman para tentar enviar 
+requisições sem o token CSRF. 
+ 
+ 
+ 
+ 
+d) Autenticação e Autorização 
+ 
+Objetivo: Garantir que apenas usuários autenticados e autorizados possam acessar 
+recursos sensíveis. 
+ 
+Teste Manual: 
+- Tentar acessar áreas restritas sem estar logado. 
+- Tentar acessar dados de outro usuário, manipulando os parâmetros de URL ou 
+fazendo requisições com privilégios elevados. 
+ 
+Teste Automatizado: 
+- Usar ferramentas como Flask-Login e Flask-Security para validar se a autenticação 
+e a autorização estão funcionando corretamente. 
+- Usar ferramentas de automação de login para verificar as falhas de autenticação. 
+ 
+e) Clickjacking 
+ 
+Objetivo: Verificar se a aplicação é vulnerável a ataques de Clickjacking, onde um 
+iframe malicioso pode induzir o usuário a clicar em elementos invisíveis. 
+ 
+Teste Manual: 
+- Tentar embutir a página da aplicação em um iframe usando o código HTML: 
+  <iframe src="http://127.0.0.1:5000" style="height: 100%; width: 100%;"></iframe> 
+- Se o conteúdo for carregado sem bloqueio, a aplicação é vulnerável a Clickjacking. 
+ 
+Teste Automatizado: 
+- Verificar se a política de cabeçalho X-Frame-Options está configurada 
+corretamente para evitar o carregamento em iframes. 
+ 
+ 
+ 
+ 
+ 

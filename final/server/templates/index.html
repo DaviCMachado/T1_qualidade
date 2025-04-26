@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; font-src 'self'; img-src 'self'; connect-src 'self';">
+    <title>Consulta ao Banco</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
+    <div class="container">
+        {% if mensagem %}
+            <div class="alert" style="color: red; padding: 10px; border: 1px solid red; background-color: #f8d7da; margin-bottom: 20px;">
+                {{ mensagem }}
+            </div>
+        {% endif %}
+        
+        <h1>Consulta ao Banco de Dados</h1>
+
+        <form action="/consulta" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" name="termo" placeholder="Digite um nome" required autocomplete="off">
+            <button type="submit">Consultar</button>
+        </form>
+        
+        {% if resultados %}
+            <h2>Resultados:</h2>
+            <ul>
+            {% for nome, profissao, salario in resultados %}
+                <li><strong>{{ nome | escape }}</strong> - {{ profissao | escape }} - R$ {{ salario }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+
+        <h2>Inserir Novo Registro</h2>
+        <form action="/inserir" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="text" name="nome" placeholder="Nome" required autocomplete="off">
+            <input type="text" name="profissao" placeholder="Profissão" required autocomplete="off">
+            <input type="number" name="salario" placeholder="Salário" required>
+            <input type="password" name="senha" placeholder="Senha" autocomplete="off" required>
+            <button type="submit">Inserir</button>
+        </form>
+        
+        <form action="/login" method="GET">
+            <button type="submit" class="alt-btn">Ir para tela de login</button>
+        </form>
+
+        <a href="/logout" rel="noopener noreferrer">Sair</a> <!-- Sair com proteção contra redirecionamento -->
+    </div>
+</body>
+</html>
