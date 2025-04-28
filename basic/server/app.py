@@ -34,6 +34,7 @@ def consulta():
     conn = sqlite3.connect('banco.db')
     c = conn.cursor()
     query = f"SELECT nome, profissao, salario FROM pessoas WHERE nome LIKE '%{termo}%'"
+    
     try:
         c.execute(query)
         resultados = c.fetchall()

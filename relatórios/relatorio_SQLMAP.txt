@@ -3,6 +3,15 @@
 
 ---
 
+Tipos de SQL Injection:
+
+Boolean-based blind → extrai info com base em respostas diferentes.
+
+Time-based blind → força o banco a demorar pra responder, revelando sucesso da injeção.
+
+Union-based → injeta uma segunda consulta para extrair dados diretamente.
+
+
 🔴 ANTES DA CORREÇÃO (VULNERÁVEL)
 
 Código vulnerável:
@@ -16,6 +25,7 @@ Problemas identificados:
 - Total ausência de parametrização.
 - A aplicação não valida o tamanho ou formato da entrada.
 - Sanitização ausente, expondo o HTML a injeção de scripts (XSS).
+- Detecção do DBMS (SQLite): permitiu ao sqlmap usar payloads específicos, mais eficazes.
 
 Testes realizados com sqlmap:
 -----------------------------
@@ -47,7 +57,7 @@ Medidas implementadas:
 2. Validação da entrada do usuário (vazia ou muito longa).
 3. Sanitização com html.escape() antes de exibir no HTML.
 4. Tratamento de exceções com try/except para evitar mensagens sensíveis.
-5. (Opcional) Log de acessos para auditoria futura.
+5. Log de acessos para auditoria futura.
 
 Reexecução dos testes com sqlmap:
 ---------------------------------

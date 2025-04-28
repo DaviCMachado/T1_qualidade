@@ -1,0 +1,62 @@
+Checklist de Segurança para Liberação de Produção
+1. Validação de Entrada
+ Todos os campos de formulário têm validação do lado cliente (HTML5) e do lado servidor.
+
+ Nenhum dado do usuário é usado diretamente em consultas SQL (sempre usa SQL parametrizado).
+
+2. Proteção contra SQL Injection
+ Usou ? ou :param nos comandos SQL em vez de concatenar strings.
+
+ Testou com sqlmap (passou sem vulnerabilidades).
+
+3. Proteção contra XSS
+ Todo conteúdo vindo do usuário é escapado no HTML ({{ nome | escape }} no Jinja2).
+
+ Testou com OWASP ZAP ou payloads de <script>alert(1)</script>.
+
+ Definiu um Content Security Policy (CSP) forte no HTML.
+
+4. Proteção contra CSRF
+ Todos os formulários POST têm token CSRF.
+
+ O backend rejeita requisições sem o token correto.
+
+ Testou manualmente enviando requisições inválidas.
+
+5. Cabeçalhos de Segurança HTTP
+ X-Frame-Options: DENY ou SAMEORIGIN → Protege contra clickjacking.
+
+ X-Content-Type-Options: nosniff → Evita interpretação errada de MIME types.
+
+ Strict-Transport-Security → Obriga HTTPS.
+
+ Referrer-Policy: no-referrer-when-downgrade ou mais seguro ainda.
+
+6. Autenticação e Sessões
+ Senhas são hash com bcrypt ou Argon2.
+
+ Senhas nunca são armazenadas em texto puro (plaintext).
+
+ Sessão expira em tempo razoável (ex: 30 minutos de inatividade).
+
+ Cookies de sessão têm flags HttpOnly, Secure, e se possível SameSite=Strict.
+
+7. Logout Seguro
+ Rota /logout invalida a sessão no servidor (não só no navegador).
+
+ Redirecionamento após logout é controlado (não aceita URL arbitrária).
+
+8. Proteção contra Clickjacking
+ Confirmado que o site não carrega dentro de um iframe.
+
+9. Uploads de Arquivos (se existir)
+ Limita o tipo de arquivo (accept="image/png, image/jpeg", etc.).
+
+ Valida a extensão e o conteúdo do arquivo no servidor.
+
+ Nunca executa ou interpreta arquivos enviados.
+
+10. Auditoria e Monitoramento (se for sistema mais crítico)
+ Loga tentativas de login (especialmente falhas).
+
+ Loga ações administrativas sensíveis.

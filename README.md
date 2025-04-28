@@ -1,11 +1,16 @@
 # T1_qualidade
 
-Esse exemplo está vulnerável de propósito, para que possamos aplicar proteções como:
+Feito por: Davi de Castro Machado e Diego Chaves
 
-Uso de queries parametrizadas (para evitar SQL Injection);
+Implementação de um servidor Flask fundamentado em medidas de segurança.
+Utilizamos um protocolo de testes, com a ajuda de diversas ferramentas para avaliar a confiabilidade do servidor.
 
-Validação de entrada;
+A pasta *basic* contém o código inicial, sem nenhuma medida de segurança.
+A pasta *final* contém o código final, com as medidas devidamente implementadas e testadas.
 
-Autenticação/autorização;
+O docs presente na raíz do diretório apresenta os principais resultados obtidos.
+Resultados mais detalhados podem ser acessados na pasta *relatórios*.
 
-Logs e auditoria de acesso.
+Mesmo com as medidas de segurança, esse é um servidor de desenvolvimento.
+Para um servidor de produção, seriam necessários testes mais intensivos e implementação de https.
+Esse código foi utilizado apenas para fins didáticos de aprendizado.

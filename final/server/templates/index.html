@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; font-src 'self'; img-src 'self'; connect-src 'self';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; font-src 'self'; img-src 'self'; connect-src 'self'; base-uri 'self'; form-action 'self';">
     <title>Consulta ao Banco</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
@@ -11,6 +11,12 @@
         {% if mensagem %}
             <div class="alert" style="color: red; padding: 10px; border: 1px solid red; background-color: #f8d7da; margin-bottom: 20px;">
                 {{ mensagem }}
+            </div>
+        {% endif %}
+
+        {% if erro_generico %}
+            <div class="alert" style="color: red; padding: 10px; border: 1px solid red; background-color: #f8d7da; margin-bottom: 20px;">
+                Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde.
             </div>
         {% endif %}
         

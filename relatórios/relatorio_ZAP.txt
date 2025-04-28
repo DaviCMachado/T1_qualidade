@@ -1,0 +1,12 @@
+
+
+ALERTS: 
+
+CSP: Failure to Define Directive with No Fallback (14)
+Cookie without SameSite Attribute
+Authentication Request Identified
+CSP: Header & Meta (5)
+Information Disclosure - Sensitive Information in URL
+Session Management Response Identified (4)
+User Agent Fuzzer (12)
+User Controllable HTML Element Attribute (Potential XSS) (3)

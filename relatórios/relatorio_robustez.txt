@@ -1,0 +1,98 @@
+Item 3
+
+Testes de Performance e Robustez 
+ 
+Ferramenta utilizada: 
+- Locust 
+
+a) Testes de Carga (Load Testing) 
+ 
+Objetivo: Garantir que o servidor consegue lidar com uma alta quantidade de 
+requisições simultâneas sem falhas. 
+ 
+- Testar a escalabilidade e a capacidade de resposta 
+do servidor. 
+
+- Configurar para enviar um número crescente de requisições e verificar se o 
+servidor continua a responder adequadamente sem travar ou cair. 
+
+
+Teste 1
+MAX de usuarios: 100
+Incremento de Usuarios por segundo: 10
+Tempo entre cada requisição: 3-6 seg
+
+Resultados:
+
+Tipo | Nome | Requisições | Falhas | Média | Mínimo | Máximo | Mediana | Requisições/s | Falhas/s
+GET | / | 256 | 0 (0.00%) | 17 ms | 4 ms | 92 ms | 7 ms | 11.50 | 0.00
+GET | /login | 284 | 0 (0.00%) | 34 ms | 4 ms | 113 ms | 31 ms | 12.76 | 0.00
+Total | - | 540 | 0 (0.00%) | 26 ms | 4 ms | 113 ms | 9 ms | 24.26 | 0.00
+
+
+Teste 2
+MAX de usuarios: 200
+Incremento de Usuarios por segundo: 20
+Tempo entre cada requisição: 3-6 seg
+
+Resultados:
+
+Tipo | Nome | Requisições | Falhas | Média | Mínimo | Máximo | Mediana | Requisições/s | Falhas/s
+GET | / | 559 | 0 (0.00%) | 36 ms | 4 ms | 222 ms | 8 ms | 24.47 | 0.00
+GET | /login | 542 | 0 (0.00%) | 54 ms | 4 ms | 269 ms | 45 ms | 23.73 | 0.00
+Total | - | 1101 | 0 (0.00%) | 45 ms | 4 ms | 269 ms | 11 ms | 48.20 | 0.00
+
+Teste 3
+MAX de usuarios: 500
+Incremento de Usuarios por segundo: 50 
+Tempo entre cada requisição: 3-6 seg
+
+Resultados:
+
+Tipo | Nome | Requisições | Falhas | Média | Mínimo | Máximo | Mediana | Requisições/s | Falhas/s
+GET | / | 1320 | 0 (0.00%) | 73 ms | 4 ms | 569 ms | 15 ms | 56.75 | 0.00
+GET | /login | 1429 | 0 (0.00%) | 112 ms | 4 ms | 611 ms | 95 ms | 61.44 | 0.00
+Total | - | 2749 | 0 (0.00%) | 93 ms | 4 ms | 611 ms | 25 ms | 118.20 | 0.00
+
+
+b) Testes de Resiliência (Stress Testing)
+
+
+Objetivo: Testar como o servidor se comporta em situações extremas, como altas 
+cargas ou condições inesperadas
+
+
+Teste 1
+MAX de usuarios: 1000
+Incremento de Usuarios por segundo: 100 
+Tempo entre cada requisição: 1-3 seg
+
+Resultados:
+
+Tipo | Nome | Requisições | Falhas | Média | Mínimo | Máximo | Mediana | Requisições/s | Falhas/s
+GET | / | 5666 | 0 (0.00%) | 2003 ms | 101 ms | 23152 ms | 200 ms | 100.11 | 0.00
+GET | /login | 4682 | 0 (0.00%) | 3161 ms | 96 ms | 23067 ms | 210 ms | 82.73 | 0.00
+Total | - | 10348 | 0 (0.00%) | 2527 ms | 96 ms | 23152 ms | 210 ms | 182.84 | 0.00
+
+
+Teste 2
+MAX de usuarios: 500
+Incremento de Usuarios por segundo: 0
+Tempo entre cada requisição: 3-6 seg
+
+Resultados:
+
+Tipo | Nome | Requisições | Falhas | Média | Mínimo | Máximo | Mediana | Requisições/s | Falhas/s
+GET | / | 7428 | 0 (0.00%) | 43 ms | 4 ms | 4056 ms | 9 ms | 65.74 | 0.00
+GET | /login | 5481 | 0 (0.00%) | 227 ms | 4 ms | 4139 ms | 10 ms | 48.51 | 0.00
+Total | - | 12909 | 0 (0.00%) | 121 ms | 4 ms | 4139 ms | 9 ms | 114.25 | 0.00
+
+
+
+Conclusão
+
+Os testes realizados demonstraram que o servidor é capaz de lidar 
+com altas quantidades de requisições simultâneas sem falhas, 
+mantendo uma boa performance mesmo em condições de carga extrema. 
+A média de tempo de resposta foi adequada em todos os testes, 
+com uma variação aceitável no máximo de requisições por segundo.
